@@ -44,7 +44,7 @@ Ways to generate an SMTP e-mail and send it through the NORMS relay to a receivi
 ### Powershell 
 'credentials' are entered using powershell $credentials command
 
-Send-MailMessage -To someuser@somemail.com -From 'Test <test@test.com>' -Subject 'hi'-Body 'testing' -SmtpServer 127.0.0.1 -Port 587 -Credential $mycredentials
+Send-MailMessage -To someuser@somemail.com -From 'Test <test@test.com>' -Subject 'hi' -Body 'testing' -BodyAsHtml -SmtpServer 127.0.0.1 -Port 587 -Credential $mycredentials
 
 ### Python
 
