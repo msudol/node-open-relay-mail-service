@@ -21,7 +21,7 @@ var Config = {
         //auth: {
         //    user: account.user, // generated ethereal user
         //    pass: account.pass // generated ethereal password
-        //}          
+        //}  
     },
     
     // Webserver configuration
