@@ -77,7 +77,7 @@ class MailServer {
                 return callback();  // accept mailfrom
             },
             
-            // check mail to
+            // check mail to. This is where receipient filtering occurs, not parsemessage
             onRcptTo(address, session, callback) {
                 
                 var users = self.config.auth[self.config.mailServer.useAuthStore];
@@ -103,8 +103,8 @@ class MailServer {
 
                 simpleParser(stream)
                 .then(parsed => {
-                    // should probably have parsemessage run a callback with success, err as well.
-                    self.parseMessage(parsed, session);
+                    // should probably have parsemessage run a callback with success, err as well... for now just forward to the transporter
+                    self.forwardMessage(self.parseMessage(parsed, session));
                 })
                 .catch(err => {
                     logger.log('error', err);
@@ -147,9 +147,22 @@ class MailServer {
     parseMessage(parsed, session) { 
         
         //TODO: need error checking - if we're missing values need to reject the request now.
-        var from = '"'+parsed.from.value[0].name+'" <'+parsed.from.value[0].address+'>';
-        var to = parsed.to.value[0].address;
         
+        logger.log('debug', parsed);
+        
+        var from = '"'+parsed.from.value[0].name+'" <'+parsed.from.value[0].address+'>';
+        
+        
+        if (parsed.to.value.length > 0) {
+            var rcptto = [];
+            for (var i = 0; i < parsed.to.value.length; i++) {
+                rcptto.push(parsed.to.value[i].address);
+            }
+            var to = rcptto.toString();
+        } else {    
+            var to = parsed.to.value[0].address;
+        }
+
         // Add in an identifier to tell where this emailed from (enable/disable in config)
         var remoteAddress = session.remoteAddress;
         var parText = parsed.text + "\n\n This e-mail originated from: " + remoteAddress;
@@ -164,9 +177,12 @@ class MailServer {
             html: parHtml
         };
         
-        this.forwardMessage(mailOptions);
+        // should just return mailOptions to the calling function instead
+        logger.log('debug', 'Logging Parser mailoptions: ');
+        logger.log('debug', mailOptions);
+        
+        return mailOptions;
     }
 }
-
 
 module.exports = MailServer;

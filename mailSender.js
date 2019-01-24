@@ -25,11 +25,16 @@ class MailSender {
         
         // verify connection configuration
         this.transporter.verify(function(error, success) {
+            
             if (error) {
+                logger.log('error', 'Transporter verify failed.');
                 logger.log('error', error);
-            } else {
-                logger.log('info', 'Remote Mail Server is ready to take our messages');
-           }
+                return;
+            } 
+                
+            logger.log('info', 'Remote Mail Server is ready to take our messages');
+            logger.log('debug', success);
+            
         });
     }
     
@@ -40,12 +45,14 @@ class MailSender {
         this.transporter.sendMail(mailOptions, (error, info) => {
             
             if (error) {
-                //TODO: file log errors
-                return logger.log('error', error);
+                logger.log('error', 'Transporter sendMail failed.');
+                logger.log('error', error);
+                return;
             }
             
             //TODO: file log sent message info (for admin review)
             logger.log('info', 'Message sent: %s', info.messageId);
+            logger.log('debug', info);
             
         });
     }

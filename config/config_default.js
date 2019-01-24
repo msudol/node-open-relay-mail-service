@@ -75,6 +75,11 @@ var Config = {
         serviceName: "NodeMailRelay",
         description: "Node Mail Relay Service",
         scriptPath: require('path').join(__dirname,'app.js')
+    },
+    
+    // configure logging level here using RFC5424 standard  (error, warn, info, verbose, debug, silly)
+    logging: {
+        level: 'debug'
     }
 };
 
