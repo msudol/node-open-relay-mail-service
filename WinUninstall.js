@@ -2,7 +2,7 @@
 var Service = require('node-windows').Service;
 
 // get our config values
-var config = require('./config.js');
+var config = require('./config/config.js');
 
 // Create a new service object
 var svc = new Service({
