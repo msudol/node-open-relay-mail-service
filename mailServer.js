@@ -174,13 +174,16 @@ class MailServer {
         var parText = parsed.text + "\n\n This e-mail originated from: " + remoteAddress;
         var parHtml = parsed.html + "<p> This e-mail originated from: " + remoteAddress + "</p>";
         
+		var attachments = parsed.attachments; 
+		
         // construct an object that we'll forward to the transporter
         var mailOptions = {
             from: from,
             to: to,
             subject: parsed.subject,
             text: parText,
-            html: parHtml
+            html: parHtml,
+			attachments: attachments
         };
         
         // should just return mailOptions to the calling function instead
