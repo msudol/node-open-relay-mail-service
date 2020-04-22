@@ -65,14 +65,17 @@ class MailServer {
                 
                 var mailFrom = address;
                 
-                // assumes no setting means user is allow to send to any
-                if (users[session.user].allowedFrom !== undefined) {
-                    //TODO: possible wildcard addresses?
-                    if (!users[session.user].allowedFrom.includes(mailFrom.address)) {
-                        logger.log('warn', 'Invalid from address: %s', mailFrom.address);
-                        return callback(new Error('Not allowed to send from address: ' + mailFrom.address));
-                    }
-                }   
+				// check if user is defined at all 
+				if (users !== undefined) {
+					// assumes no setting means user is allow to send to any
+					if (users[session.user].allowedFrom !== undefined) {
+						//TODO: possible wildcard addresses?
+						if (!users[session.user].allowedFrom.includes(mailFrom.address)) {
+							logger.log('warn', 'Invalid from address: %s', mailFrom.address);
+							return callback(new Error('Not allowed to send from address: ' + mailFrom.address));
+						}
+					}  
+				}				
                 
                 return callback();  // accept mailfrom
             },
@@ -83,17 +86,20 @@ class MailServer {
                 var users = self.config.auth[self.config.mailServer.useAuthStore];
                 
                 var mailTo = address;
-                // assumes no entry means send to any
-                if (users[session.user].allowedTo !== undefined) {
-                    // may not need to loop here
-                    //TODO: possible wildcard addresses?
-                    for (var i = 0; i < mailTo.length; i++) {
-                        if (!users[session.user].allowedTo.includes(mailTo[i].address)) {
-                            logger.log('warn', 'Invalid to address: %s', mailFrom.address);
-                             return callback(new Error('Not allowed to send to address: '));
-                        }
-                    }                 
-                } 
+				// check if user is defined at all 
+				if (users !== undefined) {
+					// assumes no entry means send to any
+					if (users[session.user].allowedTo !== undefined) {
+						// may not need to loop here
+						//TODO: possible wildcard addresses?
+						for (var i = 0; i < mailTo.length; i++) {
+							if (!users[session.user].allowedTo.includes(mailTo[i].address)) {
+								logger.log('warn', 'Invalid to address: %s', mailFrom.address);
+								 return callback(new Error('Not allowed to send to address: '));
+							}
+						}                 
+					} 
+				}
                 
                 return callback(); // accept rcptTo
             },
